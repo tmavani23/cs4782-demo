@@ -1,0 +1,1346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CNN Filter Visualizer</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #252836;
+    --border: #2e3347;
+    --accent: #6c63ff;
+    --accent2: #ff6584;
+    --text: #e2e8f0;
+    --text-muted: #8892a4;
+    --green: #48d597;
+    --yellow: #ffc857;
+    --radius: 10px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 24px 16px;
+  }
+  header {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+  header h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 8px;
+  }
+  header p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.5;
+  }
+  .main-grid {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px;
+  }
+  .card h3 {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    margin-bottom: 14px;
+    font-weight: 600;
+  }
+  .tab-bar {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 14px;
+    background: var(--surface2);
+    border-radius: 8px;
+    padding: 4px;
+  }
+  .tab-btn {
+    flex: 1;
+    padding: 7px;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.15s;
+  }
+  .tab-btn.active {
+    background: var(--accent);
+    color: #fff;
+  }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  #upload-area {
+    border: 2px dashed var(--border);
+    border-radius: 8px;
+    padding: 28px 16px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+  }
+  #upload-area:hover, #upload-area.drag-over {
+    border-color: var(--accent);
+    background: rgba(108,99,255,0.06);
+    color: var(--text);
+  }
+  #upload-area .upload-icon { font-size: 2rem; margin-bottom: 8px; }
+  #file-input { display: none; }
+
+  #draw-canvas {
+    display: block;
+    border-radius: 8px;
+    cursor: crosshair;
+    border: 1px solid var(--border);
+    touch-action: none;
+  }
+  .draw-controls {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .btn {
+    padding: 7px 14px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.82rem;
+    font-weight: 600;
+    transition: all 0.15s;
+  }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { background: #5a52e0; }
+  .btn-secondary { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-ghost { background: transparent; color: var(--text-muted); border: 1px solid var(--border); }
+  .btn-ghost:hover { color: var(--text); border-color: var(--text-muted); }
+  .color-swatch {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: border-color 0.1s;
+  }
+  .color-swatch.active { border-color: var(--text); }
+
+  .layer-selector {
+    display: flex;
+    gap: 4px;
+    background: var(--surface2);
+    border-radius: 8px;
+    padding: 4px;
+    margin-bottom: 16px;
+  }
+  .layer-btn {
+    flex: 1;
+    padding: 8px 4px;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.82rem;
+    font-weight: 600;
+    transition: all 0.15s;
+  }
+  .layer-btn.active { background: var(--surface); color: var(--text); box-shadow: 0 1px 4px rgba(0,0,0,0.3); }
+
+  .filter-list { display: flex; flex-direction: column; gap: 10px; }
+  .filter-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    background: var(--surface2);
+    border: 1px solid transparent;
+    transition: border-color 0.15s;
+  }
+  .filter-row.enabled { border-color: var(--accent); }
+  .filter-toggle {
+    width: 36px; height: 20px;
+    border-radius: 10px;
+    background: var(--border);
+    border: none;
+    cursor: pointer;
+    position: relative;
+    transition: background 0.2s;
+    flex-shrink: 0;
+  }
+  .filter-toggle::after {
+    content: '';
+    position: absolute;
+    top: 2px; left: 2px;
+    width: 16px; height: 16px;
+    background: #fff;
+    border-radius: 50%;
+    transition: left 0.2s;
+  }
+  .filter-toggle.on { background: var(--accent); }
+  .filter-toggle.on::after { left: 18px; }
+  .filter-info { flex: 1; }
+  .filter-name { font-size: 0.88rem; font-weight: 600; }
+  .filter-desc { font-size: 0.75rem; color: var(--text-muted); margin-top: 2px; }
+  .filter-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .intensity-row {
+    margin-top: 14px;
+    padding: 10px;
+    background: var(--surface2);
+    border-radius: 8px;
+  }
+  .intensity-row label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+  .intensity-row label span { color: var(--accent); font-weight: 600; }
+  input[type=range] {
+    width: 100%;
+    accent-color: var(--accent);
+    cursor: pointer;
+  }
+
+  /* Output section */
+  .output-section {
+    grid-column: 1 / -1;
+  }
+  .output-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 14px;
+  }
+  .output-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px;
+    transition: border-color 0.15s;
+  }
+  .output-card.active { border-color: var(--accent); }
+  .output-card-title {
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .output-card-title .dot { width: 8px; height: 8px; border-radius: 50%; }
+  .output-canvas {
+    display: block;
+    width: 100%;
+    border-radius: 6px;
+    background: #000;
+    image-rendering: pixelated;
+  }
+  .kernel-display {
+    margin-top: 8px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    font-size: 0.7rem;
+    font-family: monospace;
+  }
+  .kernel-cell {
+    background: var(--surface2);
+    padding: 3px;
+    text-align: center;
+    border-radius: 3px;
+    color: var(--text-muted);
+  }
+  .kernel-cell.positive { color: var(--green); }
+  .kernel-cell.negative { color: var(--accent2); }
+  .kernel-cell.zero { color: var(--border); }
+
+  /* Animation section */
+  .anim-section {
+    grid-column: 1 / -1;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+  }
+  .anim-section h2 {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .anim-section > p {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    margin-bottom: 18px;
+  }
+  .anim-controls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+  }
+  .anim-controls select {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 7px 10px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    cursor: pointer;
+  }
+  .anim-controls label { font-size: 0.82rem; color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
+  .anim-layout {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 20px;
+    align-items: start;
+  }
+  .anim-source-wrap { position: relative; }
+  #anim-source-canvas {
+    display: block;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    image-rendering: pixelated;
+  }
+  #anim-overlay {
+    position: absolute;
+    top: 0; left: 0;
+    pointer-events: none;
+    border-radius: 6px;
+  }
+  .anim-info { display: flex; flex-direction: column; gap: 14px; }
+  .kernel-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+  }
+  .kernel-grid-big {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px;
+    font-size: 0.85rem;
+    font-family: monospace;
+  }
+  .kernel-cell-big {
+    background: var(--surface2);
+    padding: 6px 4px;
+    text-align: center;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    min-width: 36px;
+    transition: background 0.1s, color 0.1s;
+  }
+  .kernel-cell-big.highlight { background: rgba(108,99,255,0.3); border-color: var(--accent); color: #fff; }
+  .kernel-cell-big.positive { color: var(--green); }
+  .kernel-cell-big.negative { color: var(--accent2); }
+  .anim-eq {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    line-height: 1.8;
+    font-family: monospace;
+    background: var(--surface2);
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    max-height: 120px;
+    overflow-y: auto;
+  }
+  .anim-eq .term { color: var(--text); }
+  .anim-eq .result { color: var(--accent); font-weight: 700; font-size: 0.9rem; }
+  #anim-output-canvas {
+    display: block;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    image-rendering: pixelated;
+  }
+  .progress-bar {
+    width: 100%;
+    height: 4px;
+    background: var(--surface2);
+    border-radius: 2px;
+    margin-top: 10px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 2px;
+    transition: width 0.1s;
+    width: 0%;
+  }
+
+  .layer-explainer {
+    grid-column: 1 / -1;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px;
+  }
+  .layer-explainer h3 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 12px; }
+  .layer-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .layer-card {
+    padding: 12px;
+    background: var(--surface2);
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    transition: border-color 0.15s;
+  }
+  .layer-card.current { border-color: var(--accent); background: rgba(108,99,255,0.08); }
+  .layer-card-num { font-size: 0.72rem; color: var(--accent); font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; }
+  .layer-card-title { font-size: 0.9rem; font-weight: 600; margin: 4px 0; }
+  .layer-card-desc { font-size: 0.78rem; color: var(--text-muted); line-height: 1.4; }
+
+  .status-bar {
+    text-align: center;
+    padding: 10px;
+    background: var(--surface2);
+    border-radius: 8px;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    grid-column: 1 / -1;
+  }
+  .status-bar.processing { color: var(--yellow); }
+  .status-bar.done { color: var(--green); }
+
+  @media (max-width: 700px) {
+    .main-grid { grid-template-columns: 1fr; }
+    .anim-layout { grid-template-columns: 1fr; }
+    .layer-cards { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>CNN Filter Visualizer</h1>
+  <p>See how convolutional neural networks detect edges and patterns — apply filters to any image and watch a kernel slide across pixels in real time.</p>
+</header>
+
+<div class="main-grid">
+
+  <!-- Left: Input -->
+  <div class="card" id="input-card">
+    <h3>Input Image</h3>
+    <div class="tab-bar">
+      <button class="tab-btn active" onclick="switchTab('upload')">Upload</button>
+      <button class="tab-btn" onclick="switchTab('draw')">Draw</button>
+      <button class="tab-btn" onclick="switchTab('preset')">Presets</button>
+    </div>
+
+    <div class="tab-panel active" id="tab-upload">
+      <div id="upload-area" onclick="document.getElementById('file-input').click()">
+        <div class="upload-icon">🖼️</div>
+        <div>Click to upload an image</div>
+        <div style="font-size:0.75rem;margin-top:4px;color:var(--text-muted)">or drag & drop · PNG, JPG</div>
+      </div>
+      <input type="file" id="file-input" accept="image/*">
+    </div>
+
+    <div class="tab-panel" id="tab-draw">
+      <canvas id="draw-canvas" width="256" height="256"></canvas>
+      <div class="draw-controls">
+        <button class="btn btn-ghost" onclick="clearDrawCanvas()">Clear</button>
+        <div style="display:flex;gap:6px;align-items:center;margin-left:auto">
+          <span style="font-size:0.78rem;color:var(--text-muted)">Color:</span>
+          <div class="color-swatch active" style="background:#fff" onclick="setDrawColor('#fff',this)"></div>
+          <div class="color-swatch" style="background:#888" onclick="setDrawColor('#888',this)"></div>
+          <div class="color-swatch" style="background:#222" onclick="setDrawColor('#222',this)"></div>
+        </div>
+        <label style="font-size:0.78rem;color:var(--text-muted);display:flex;align-items:center;gap:4px">
+          Size:
+          <input type="range" id="brush-size" min="2" max="24" value="8" style="width:60px">
+        </label>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="tab-preset">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <button class="btn btn-secondary" onclick="loadPreset('checkerboard')">Checkerboard</button>
+        <button class="btn btn-secondary" onclick="loadPreset('stripes')">Stripes</button>
+        <button class="btn btn-secondary" onclick="loadPreset('circle')">Circle</button>
+        <button class="btn btn-secondary" onclick="loadPreset('gradient')">Gradient</button>
+        <button class="btn btn-secondary" onclick="loadPreset('cross')">Cross/Grid</button>
+        <button class="btn btn-secondary" onclick="loadPreset('noise')">Random Noise</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right: Controls -->
+  <div style="display:flex;flex-direction:column;gap:16px">
+    <div class="card">
+      <h3>CNN Layer</h3>
+      <div class="layer-selector">
+        <button class="layer-btn active" onclick="setLayer(1,this)">Layer 1</button>
+        <button class="layer-btn" onclick="setLayer(2,this)">Layer 2</button>
+        <button class="layer-btn" onclick="setLayer(3,this)">Layer 3</button>
+      </div>
+      <div id="layer-hint" style="font-size:0.8rem;color:var(--text-muted);line-height:1.4;padding:8px 10px;background:var(--surface2);border-radius:6px">
+        <strong style="color:var(--accent)">Layer 1</strong> — Apply basic filters directly to the input image to detect low-level features like edges and textures.
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Filters</h3>
+      <div class="filter-list" id="filter-list">
+        <!-- rendered by JS -->
+      </div>
+      <div class="intensity-row">
+        <label>Filter Intensity <span id="intensity-val">100%</span></label>
+        <input type="range" id="intensity-slider" min="0" max="100" value="100" oninput="updateIntensity(this.value)">
+      </div>
+    </div>
+  </div>
+
+  <!-- Status bar -->
+  <div class="status-bar" id="status-bar">Load an image or draw something to get started.</div>
+
+  <!-- Layer explainer -->
+  <div class="layer-explainer">
+    <h3>How CNN Layers Work</h3>
+    <div class="layer-cards">
+      <div class="layer-card current" id="lc-1">
+        <div class="layer-card-num">Layer 1</div>
+        <div class="layer-card-title">Low-level Features</div>
+        <div class="layer-card-desc">Filters detect basic edges, gradients, and textures directly from raw pixel values.</div>
+      </div>
+      <div class="layer-card" id="lc-2">
+        <div class="layer-card-num">Layer 2</div>
+        <div class="layer-card-title">Mid-level Patterns</div>
+        <div class="layer-card-desc">Filters applied to Layer 1's output detect corners, curves, and simple shapes.</div>
+      </div>
+      <div class="layer-card" id="lc-3">
+        <div class="layer-card-num">Layer 3</div>
+        <div class="layer-card-title">High-level Combinations</div>
+        <div class="layer-card-desc">Multiple feature maps combined to detect complex structures like textures and object parts.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Output grid -->
+  <div class="output-section">
+    <div class="output-grid" id="output-grid">
+      <!-- rendered by JS -->
+    </div>
+  </div>
+
+  <!-- Animation section -->
+  <div class="anim-section">
+    <h2>🔬 Convolution Step-by-Step</h2>
+    <p>Watch the 3×3 kernel slide across your image pixel by pixel, computing each output value as a weighted sum.</p>
+    <div class="anim-controls">
+      <select id="anim-filter-select">
+        <option value="sobel">Edge Detection (Sobel)</option>
+        <option value="blur">Blur</option>
+        <option value="sharpen">Sharpen</option>
+        <option value="emboss">Emboss</option>
+      </select>
+      <button class="btn btn-primary" id="anim-btn" onclick="toggleAnimation()">▶ Animate</button>
+      <button class="btn btn-ghost" onclick="resetAnimation()">↺ Reset</button>
+      <label>Speed: <input type="range" id="anim-speed" min="1" max="10" value="5" style="width:80px"></label>
+    </div>
+    <div class="anim-layout">
+      <div>
+        <div class="kernel-label">Source</div>
+        <div class="anim-source-wrap">
+          <canvas id="anim-source-canvas" width="160" height="160"></canvas>
+          <canvas id="anim-overlay" width="160" height="160"></canvas>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" id="anim-progress"></div></div>
+      </div>
+      <div class="anim-info">
+        <div>
+          <div class="kernel-label">Kernel</div>
+          <div class="kernel-grid-big" id="kernel-display-big"></div>
+        </div>
+        <div>
+          <div class="kernel-label">Computation at current pixel</div>
+          <div class="anim-eq" id="anim-eq">Start the animation to see the calculation here.</div>
+        </div>
+      </div>
+      <div>
+        <div class="kernel-label">Output</div>
+        <canvas id="anim-output-canvas" width="160" height="160"></canvas>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ─── Kernels ───────────────────────────────────────────────────────────────
+const FILTERS = [
+  {
+    id: 'sobel',
+    name: 'Edge Detection',
+    desc: 'Sobel gradient magnitude',
+    color: '#ff6584',
+    kernelX: [[-1,0,1],[-2,0,2],[-1,0,1]],
+    kernelY: [[-1,-2,-1],[0,0,0],[1,2,1]],
+    type: 'sobel',
+    enabled: true,
+  },
+  {
+    id: 'blur',
+    name: 'Gaussian Blur',
+    desc: 'Weighted average of neighbors',
+    color: '#6c63ff',
+    kernel: [[1,2,1],[2,4,2],[1,2,1]],
+    divisor: 16,
+    type: 'weighted',
+    enabled: true,
+  },
+  {
+    id: 'sharpen',
+    name: 'Sharpen',
+    desc: 'Enhance high-frequency detail',
+    color: '#ffc857',
+    kernel: [[0,-1,0],[-1,5,-1],[0,-1,0]],
+    divisor: 1,
+    type: 'weighted',
+    enabled: true,
+  },
+  {
+    id: 'emboss',
+    name: 'Emboss',
+    desc: 'Directional depth illusion',
+    color: '#48d597',
+    kernel: [[-2,-1,0],[-1,1,1],[0,1,2]],
+    divisor: 1,
+    type: 'emboss',
+    enabled: true,
+  },
+];
+
+const LAYER_HINTS = [
+  '',
+  '<strong style="color:var(--accent)">Layer 1</strong> — Apply basic filters directly to the input image to detect low-level features like edges and textures.',
+  '<strong style="color:var(--accent)">Layer 2</strong> — Filters applied on Layer 1\'s edge output detect corners and curves — mid-level patterns emerge.',
+  '<strong style="color:var(--accent)">Layer 3</strong> — Multiple feature maps are combined (max pooling style) to capture complex structures.',
+];
+
+// ─── State ─────────────────────────────────────────────────────────────────
+let currentLayer = 1;
+let intensity = 1.0;
+let sourceImageData = null; // original 160x160 grayscale ImageData
+let drawColor = '#fff';
+let animRunning = false;
+let animFrame = null;
+let animX = 0, animY = 0;
+const ANIM_SIZE = 160;
+const PROC_SIZE = 160;
+
+// ─── Init ──────────────────────────────────────────────────────────────────
+function init() {
+  renderFilterList();
+  renderOutputGrid();
+  setupDrawCanvas();
+  setupUpload();
+  setupDragDrop();
+  renderKernelBig('sobel');
+  document.getElementById('anim-filter-select').onchange = e => {
+    renderKernelBig(e.target.value);
+    resetAnimation();
+  };
+  loadPreset('checkerboard');
+}
+
+// ─── Filter list ───────────────────────────────────────────────────────────
+function renderFilterList() {
+  const el = document.getElementById('filter-list');
+  el.innerHTML = FILTERS.map(f => `
+    <div class="filter-row ${f.enabled ? 'enabled' : ''}" id="fr-${f.id}">
+      <button class="filter-toggle ${f.enabled ? 'on' : ''}" id="ft-${f.id}"
+        onclick="toggleFilter('${f.id}')"></button>
+      <div class="filter-info">
+        <div class="filter-name">${f.name}</div>
+        <div class="filter-desc">${f.desc}</div>
+      </div>
+      <div class="filter-dot" style="background:${f.color}"></div>
+    </div>
+  `).join('');
+}
+
+function toggleFilter(id) {
+  const f = FILTERS.find(x => x.id === id);
+  f.enabled = !f.enabled;
+  document.getElementById('ft-' + id).classList.toggle('on', f.enabled);
+  document.getElementById('fr-' + id).classList.toggle('enabled', f.enabled);
+  const card = document.getElementById('oc-' + id);
+  if (card) card.style.opacity = f.enabled ? '1' : '0.3';
+  applyAllFilters();
+}
+
+// ─── Output grid ───────────────────────────────────────────────────────────
+function renderOutputGrid() {
+  const el = document.getElementById('output-grid');
+  const cards = [
+    { id: 'original', name: 'Original', color: '#8892a4', kernel: null },
+    ...FILTERS.map(f => ({ id: f.id, name: f.name, color: f.color, kernel: f }))
+  ];
+  el.innerHTML = cards.map(c => `
+    <div class="output-card" id="oc-${c.id}">
+      <div class="output-card-title">
+        <span class="dot" style="background:${c.color}"></span>
+        ${c.name}
+      </div>
+      <canvas class="output-canvas" id="canvas-${c.id}" width="${PROC_SIZE}" height="${PROC_SIZE}"
+        style="height:${PROC_SIZE}px"></canvas>
+      ${c.kernel ? renderKernelMini(c.kernel) : ''}
+    </div>
+  `).join('');
+}
+
+function renderKernelMini(f) {
+  let k = f.type === 'sobel' ? f.kernelX : f.kernel;
+  return `<div class="kernel-display">${
+    k.flat().map(v => `<div class="kernel-cell ${v > 0 ? 'positive' : v < 0 ? 'negative' : 'zero'}">${v}</div>`).join('')
+  }</div>
+  ${f.type === 'sobel' ? `<div style="font-size:0.7rem;color:var(--text-muted);margin-top:3px">+ Sobel Y → magnitude</div>` : ''}`;
+}
+
+// ─── Convolution engine ────────────────────────────────────────────────────
+function convolveWeighted(data, width, height, kernel, divisor) {
+  const out = new Float32Array(width * height);
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      let sum = 0;
+      for (let ky = 0; ky < 3; ky++) {
+        for (let kx = 0; kx < 3; kx++) {
+          const px = Math.min(Math.max(x + kx - 1, 0), width - 1);
+          const py = Math.min(Math.max(y + ky - 1, 0), height - 1);
+          sum += data[py * width + px] * kernel[ky][kx];
+        }
+      }
+      out[y * width + x] = sum / divisor;
+    }
+  }
+  return out;
+}
+
+function convolveSobel(data, width, height, kX, kY) {
+  const out = new Float32Array(width * height);
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      let gx = 0, gy = 0;
+      for (let ky = 0; ky < 3; ky++) {
+        for (let kx = 0; kx < 3; kx++) {
+          const px = Math.min(Math.max(x + kx - 1, 0), width - 1);
+          const py = Math.min(Math.max(y + ky - 1, 0), height - 1);
+          const v = data[py * width + px];
+          gx += v * kX[ky][kx];
+          gy += v * kY[ky][kx];
+        }
+      }
+      out[y * width + x] = Math.sqrt(gx * gx + gy * gy);
+    }
+  }
+  return out;
+}
+
+function imageDataToGray(imageData) {
+  const { data, width, height } = imageData;
+  const gray = new Float32Array(width * height);
+  for (let i = 0; i < width * height; i++) {
+    gray[i] = 0.299 * data[i * 4] + 0.587 * data[i * 4 + 1] + 0.114 * data[i * 4 + 2];
+  }
+  return gray;
+}
+
+function normalizeToImageData(floatArr, width, height, centerAt128 = false) {
+  let min = Infinity, max = -Infinity;
+  for (const v of floatArr) { if (v < min) min = v; if (v > max) max = v; }
+  const range = max - min || 1;
+  const result = new Uint8ClampedArray(width * height * 4);
+  for (let i = 0; i < width * height; i++) {
+    const v = centerAt128
+      ? Math.min(255, Math.max(0, floatArr[i] + 128))
+      : Math.round(((floatArr[i] - min) / range) * 255);
+    result[i * 4] = v;
+    result[i * 4 + 1] = v;
+    result[i * 4 + 2] = v;
+    result[i * 4 + 3] = 255;
+  }
+  return result;
+}
+
+function clampToImageData(floatArr, width, height, centerAt128 = false) {
+  const result = new Uint8ClampedArray(width * height * 4);
+  for (let i = 0; i < width * height; i++) {
+    const v = Math.min(255, Math.max(0, centerAt128 ? floatArr[i] + 128 : floatArr[i]));
+    result[i * 4] = v;
+    result[i * 4 + 1] = v;
+    result[i * 4 + 2] = v;
+    result[i * 4 + 3] = 255;
+  }
+  return result;
+}
+
+function applyIntensityBlend(original, filtered, alpha, width, height) {
+  const result = new Uint8ClampedArray(width * height * 4);
+  for (let i = 0; i < width * height * 4; i++) {
+    result[i] = Math.round(original[i] * (1 - alpha) + filtered[i] * alpha);
+  }
+  return result;
+}
+
+// ─── Main processing pipeline ──────────────────────────────────────────────
+function applyAllFilters() {
+  if (!sourceImageData) return;
+  setStatus('Processing...', 'processing');
+
+  const w = sourceImageData.width;
+  const h = sourceImageData.height;
+
+  // Original grayscale
+  let gray = imageDataToGray(sourceImageData);
+
+  // Layer simulation: each layer processes the previous layer's edge output
+  if (currentLayer === 2) {
+    const edgeFloat = convolveSobel(gray, w, h, FILTERS[0].kernelX, FILTERS[0].kernelY);
+    // normalize 0-255
+    let max = 0;
+    for (const v of edgeFloat) if (v > max) max = v;
+    if (max > 0) gray = edgeFloat.map(v => (v / max) * 255);
+    else gray = edgeFloat;
+  } else if (currentLayer === 3) {
+    // Combine edge + blur outputs
+    const edgeFloat = convolveSobel(gray, w, h, FILTERS[0].kernelX, FILTERS[0].kernelY);
+    const blurFloat = convolveWeighted(gray, w, h, FILTERS[1].kernel, FILTERS[1].divisor);
+    // Apply edge on top of blur (simulating combination)
+    const edgeOnBlur = convolveSobel(blurFloat, w, h, FILTERS[0].kernelX, FILTERS[0].kernelY);
+    let max = 0;
+    for (const v of edgeOnBlur) if (v > max) max = v;
+    if (max > 0) gray = edgeOnBlur.map(v => (v / max) * 255);
+    else gray = edgeOnBlur;
+  }
+
+  // Build original display
+  const origBytes = new Uint8ClampedArray(w * h * 4);
+  for (let i = 0; i < w * h; i++) {
+    const v = Math.round(gray[i]);
+    origBytes[i*4] = v; origBytes[i*4+1] = v; origBytes[i*4+2] = v; origBytes[i*4+3] = 255;
+  }
+  drawToCanvas('canvas-original', new ImageData(origBytes, w, h));
+
+  // Apply each filter
+  FILTERS.forEach(f => {
+    if (!f.enabled) return;
+    let floatOut;
+    let imgBytes;
+
+    if (f.type === 'sobel') {
+      floatOut = convolveSobel(gray, w, h, f.kernelX, f.kernelY);
+      imgBytes = normalizeToImageData(floatOut, w, h);
+    } else if (f.type === 'weighted') {
+      floatOut = convolveWeighted(gray, w, h, f.kernel, f.divisor);
+      imgBytes = clampToImageData(floatOut, w, h);
+    } else if (f.type === 'emboss') {
+      floatOut = convolveWeighted(gray, w, h, f.kernel, f.divisor);
+      imgBytes = clampToImageData(floatOut, w, h, true);
+    }
+
+    const blended = applyIntensityBlend(origBytes, imgBytes, intensity, w, h);
+    drawToCanvas('canvas-' + f.id, new ImageData(blended, w, h));
+  });
+
+  setStatus('Ready', 'done');
+  syncAnimSource();
+}
+
+function drawToCanvas(id, imageData) {
+  const canvas = document.getElementById(id);
+  if (!canvas) return;
+  canvas.width = imageData.width;
+  canvas.height = imageData.height;
+  canvas.style.height = imageData.height + 'px';
+  const ctx = canvas.getContext('2d');
+  ctx.putImageData(imageData, 0, 0);
+}
+
+// ─── Image loading ─────────────────────────────────────────────────────────
+function loadImageElement(img) {
+  const offscreen = document.createElement('canvas');
+  offscreen.width = PROC_SIZE;
+  offscreen.height = PROC_SIZE;
+  const ctx = offscreen.getContext('2d');
+  ctx.drawImage(img, 0, 0, PROC_SIZE, PROC_SIZE);
+  sourceImageData = ctx.getImageData(0, 0, PROC_SIZE, PROC_SIZE);
+  applyAllFilters();
+}
+
+function setupUpload() {
+  const input = document.getElementById('file-input');
+  input.onchange = e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => { loadImageElement(img); URL.revokeObjectURL(url); };
+    img.src = url;
+  };
+}
+
+function setupDragDrop() {
+  const area = document.getElementById('upload-area');
+  area.ondragover = e => { e.preventDefault(); area.classList.add('drag-over'); };
+  area.ondragleave = () => area.classList.remove('drag-over');
+  area.ondrop = e => {
+    e.preventDefault();
+    area.classList.remove('drag-over');
+    const file = e.dataTransfer.files[0];
+    if (!file || !file.type.startsWith('image/')) return;
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => { loadImageElement(img); URL.revokeObjectURL(url); };
+    img.src = url;
+    switchTab('upload');
+  };
+}
+
+// ─── Draw canvas ───────────────────────────────────────────────────────────
+function setupDrawCanvas() {
+  const canvas = document.getElementById('draw-canvas');
+  canvas.width = PROC_SIZE;
+  canvas.height = PROC_SIZE;
+  canvas.style.width = '100%';
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = '#111';
+  ctx.fillRect(0, 0, PROC_SIZE, PROC_SIZE);
+  let painting = false;
+  let lastX = 0, lastY = 0;
+
+  function getPos(e) {
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    return [(clientX - rect.left) * scaleX, (clientY - rect.top) * scaleY];
+  }
+
+  function draw(e) {
+    if (!painting) return;
+    e.preventDefault();
+    const [x, y] = getPos(e);
+    const size = parseInt(document.getElementById('brush-size').value);
+    ctx.beginPath();
+    ctx.moveTo(lastX, lastY);
+    ctx.lineTo(x, y);
+    ctx.strokeStyle = drawColor;
+    ctx.lineWidth = size;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.stroke();
+    [lastX, lastY] = [x, y];
+    debounceUpdateFromDraw();
+  }
+
+  canvas.onmousedown = e => { painting = true; [lastX, lastY] = getPos(e); draw(e); };
+  canvas.onmousemove = draw;
+  canvas.onmouseup = canvas.onmouseleave = () => { painting = false; };
+  canvas.ontouchstart = e => { painting = true; [lastX, lastY] = getPos(e); draw(e); };
+  canvas.ontouchmove = draw;
+  canvas.ontouchend = () => { painting = false; };
+}
+
+let drawDebounce = null;
+function debounceUpdateFromDraw() {
+  clearTimeout(drawDebounce);
+  drawDebounce = setTimeout(updateFromDraw, 80);
+}
+
+function updateFromDraw() {
+  const canvas = document.getElementById('draw-canvas');
+  sourceImageData = canvas.getContext('2d').getImageData(0, 0, PROC_SIZE, PROC_SIZE);
+  applyAllFilters();
+}
+
+function clearDrawCanvas() {
+  const canvas = document.getElementById('draw-canvas');
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = '#111';
+  ctx.fillRect(0, 0, PROC_SIZE, PROC_SIZE);
+  updateFromDraw();
+}
+
+function setDrawColor(color, el) {
+  drawColor = color;
+  document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ─── Presets ───────────────────────────────────────────────────────────────
+function loadPreset(name) {
+  const canvas = document.createElement('canvas');
+  canvas.width = PROC_SIZE; canvas.height = PROC_SIZE;
+  const ctx = canvas.getContext('2d');
+  const S = PROC_SIZE;
+
+  ctx.fillStyle = '#000';
+  ctx.fillRect(0, 0, S, S);
+
+  if (name === 'checkerboard') {
+    const sq = 20;
+    for (let r = 0; r < S/sq; r++) for (let c = 0; c < S/sq; c++) {
+      ctx.fillStyle = (r+c) % 2 === 0 ? '#fff' : '#000';
+      ctx.fillRect(c*sq, r*sq, sq, sq);
+    }
+  } else if (name === 'stripes') {
+    for (let i = 0; i < S; i += 16) {
+      ctx.fillStyle = i % 32 === 0 ? '#fff' : '#000';
+      ctx.fillRect(0, i, S, 16);
+    }
+  } else if (name === 'circle') {
+    ctx.fillStyle = '#333';
+    ctx.fillRect(0, 0, S, S);
+    ctx.beginPath();
+    ctx.arc(S/2, S/2, S*0.35, 0, Math.PI*2);
+    ctx.fillStyle = '#fff';
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(S/2, S/2, S*0.2, 0, Math.PI*2);
+    ctx.fillStyle = '#333';
+    ctx.fill();
+  } else if (name === 'gradient') {
+    const grad = ctx.createLinearGradient(0, 0, S, S);
+    grad.addColorStop(0, '#000');
+    grad.addColorStop(0.5, '#fff');
+    grad.addColorStop(1, '#000');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, S, S);
+  } else if (name === 'cross') {
+    ctx.fillStyle = '#1a1a1a';
+    ctx.fillRect(0, 0, S, S);
+    const step = 32;
+    ctx.strokeStyle = '#fff';
+    ctx.lineWidth = 2;
+    for (let i = 0; i < S; i += step) {
+      ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, S); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(S, i); ctx.stroke();
+    }
+  } else if (name === 'noise') {
+    const imgd = ctx.createImageData(S, S);
+    for (let i = 0; i < S*S*4; i+=4) {
+      const v = Math.random() * 255;
+      imgd.data[i] = imgd.data[i+1] = imgd.data[i+2] = v;
+      imgd.data[i+3] = 255;
+    }
+    ctx.putImageData(imgd, 0, 0);
+  }
+
+  sourceImageData = ctx.getImageData(0, 0, S, S);
+  applyAllFilters();
+  switchTab('preset');
+}
+
+// ─── UI controls ───────────────────────────────────────────────────────────
+function switchTab(name) {
+  document.querySelectorAll('.tab-btn').forEach((b, i) => {
+    b.classList.toggle('active', ['upload','draw','preset'][i] === name);
+  });
+  document.querySelectorAll('.tab-panel').forEach((p, i) => {
+    p.classList.toggle('active', ['tab-upload','tab-draw','tab-preset'][i] === 'tab-'+name);
+  });
+  if (name === 'draw') { setTimeout(updateFromDraw, 50); }
+}
+
+function setLayer(n, btn) {
+  currentLayer = n;
+  document.querySelectorAll('.layer-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('layer-hint').innerHTML = LAYER_HINTS[n];
+  [1,2,3].forEach(i => {
+    document.getElementById('lc-' + i).classList.toggle('current', i === n);
+  });
+  applyAllFilters();
+}
+
+function updateIntensity(val) {
+  intensity = val / 100;
+  document.getElementById('intensity-val').textContent = val + '%';
+  applyAllFilters();
+}
+
+function setStatus(msg, type) {
+  const el = document.getElementById('status-bar');
+  el.textContent = msg;
+  el.className = 'status-bar ' + (type || '');
+}
+
+// ─── Animation ─────────────────────────────────────────────────────────────
+const STEP = 4; // pixels to skip per frame (tune speed)
+
+function syncAnimSource() {
+  if (!sourceImageData) return;
+  const src = document.getElementById('anim-source-canvas');
+  const ctx = src.getContext('2d');
+  // Draw grayscale version
+  const gray = imageDataToGray(sourceImageData);
+  let bytes = new Uint8ClampedArray(ANIM_SIZE * ANIM_SIZE * 4);
+  const w = sourceImageData.width, h = sourceImageData.height;
+  for (let i = 0; i < ANIM_SIZE * ANIM_SIZE; i++) {
+    const sx = Math.floor(i % ANIM_SIZE * w / ANIM_SIZE);
+    const sy = Math.floor(Math.floor(i / ANIM_SIZE) * h / ANIM_SIZE);
+    const v = Math.round(gray[sy * w + sx]);
+    bytes[i*4] = v; bytes[i*4+1] = v; bytes[i*4+2] = v; bytes[i*4+3] = 255;
+  }
+  ctx.putImageData(new ImageData(bytes, ANIM_SIZE, ANIM_SIZE), 0, 0);
+  resetAnimation();
+}
+
+let animGray = null;
+let animOutputData = null;
+
+function initAnimData() {
+  if (!sourceImageData) return false;
+  const w = ANIM_SIZE, h = ANIM_SIZE;
+  // Get grayscale at anim resolution (re-scale from sourceImageData)
+  const srcW = sourceImageData.width, srcH = sourceImageData.height;
+  const srcGray = imageDataToGray(sourceImageData);
+  animGray = new Float32Array(w * h);
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      const sx = Math.floor(x * srcW / w);
+      const sy = Math.floor(y * srcH / h);
+      animGray[y * w + x] = srcGray[sy * srcW + sx];
+    }
+  }
+  animOutputData = new Uint8ClampedArray(w * h * 4);
+  for (let i = 0; i < w * h; i++) {
+    animOutputData[i*4+3] = 255;
+  }
+  animX = 0; animY = 0;
+  return true;
+}
+
+function getAnimFilter() {
+  const id = document.getElementById('anim-filter-select').value;
+  return FILTERS.find(f => f.id === id);
+}
+
+function computeAnimPixel(x, y) {
+  const f = getAnimFilter();
+  const w = ANIM_SIZE, h = ANIM_SIZE;
+  if (f.type === 'sobel') {
+    let gx = 0, gy = 0;
+    for (let ky = 0; ky < 3; ky++) {
+      for (let kx = 0; kx < 3; kx++) {
+        const px = Math.min(Math.max(x + kx - 1, 0), w - 1);
+        const py = Math.min(Math.max(y + ky - 1, 0), h - 1);
+        const v = animGray[py * w + px];
+        gx += v * f.kernelX[ky][kx];
+        gy += v * f.kernelY[ky][kx];
+      }
+    }
+    return Math.min(255, Math.sqrt(gx*gx + gy*gy));
+  } else {
+    let sum = 0;
+    for (let ky = 0; ky < 3; ky++) {
+      for (let kx = 0; kx < 3; kx++) {
+        const px = Math.min(Math.max(x + kx - 1, 0), w - 1);
+        const py = Math.min(Math.max(y + ky - 1, 0), h - 1);
+        sum += animGray[py * w + px] * f.kernel[ky][kx];
+      }
+    }
+    if (f.divisor) sum /= f.divisor;
+    if (f.type === 'emboss') sum += 128;
+    return Math.min(255, Math.max(0, sum));
+  }
+}
+
+function buildEquationHTML(x, y) {
+  const f = getAnimFilter();
+  const w = ANIM_SIZE, h = ANIM_SIZE;
+  const kernel = f.type === 'sobel' ? f.kernelX : f.kernel;
+  const divisor = f.divisor || 1;
+  let terms = [];
+  let total = 0;
+  for (let ky = 0; ky < 3; ky++) {
+    for (let kx = 0; kx < 3; kx++) {
+      const px = Math.min(Math.max(x + kx - 1, 0), w - 1);
+      const py = Math.min(Math.max(y + ky - 1, 0), h - 1);
+      const v = Math.round(animGray[py * w + px]);
+      const k = kernel[ky][kx];
+      total += v * k;
+      if (k !== 0) terms.push(`(${v}×${k})`);
+    }
+  }
+  const result = Math.min(255, Math.max(0, f.type === 'emboss' ? total/divisor + 128 : total/divisor));
+  return `<span class="term">${terms.join(' + ')}</span><br>= ${total}${divisor !== 1 ? ' ÷ '+divisor+'  = '+Math.round(total/divisor) : ''}${f.type==='emboss' ? ' + 128' : ''}<br><span class="result">→ output: ${Math.round(result)}</span>`;
+}
+
+function drawAnimOverlay(x, y) {
+  const overlay = document.getElementById('anim-overlay');
+  const ctx = overlay.getContext('2d');
+  ctx.clearRect(0, 0, ANIM_SIZE, ANIM_SIZE);
+  const pixSize = ANIM_SIZE / ANIM_SIZE; // 1px per pixel since same size
+
+  // Draw kernel window
+  ctx.strokeStyle = '#ff6584';
+  ctx.lineWidth = 2;
+  ctx.strokeRect((x - 1) - 0.5, (y - 1) - 0.5, 3 + 1, 3 + 1);
+
+  // Highlight cells
+  for (let ky = 0; ky < 3; ky++) {
+    for (let kx = 0; kx < 3; kx++) {
+      const px = x + kx - 1;
+      const py = y + ky - 1;
+      if (px >= 0 && px < ANIM_SIZE && py >= 0 && py < ANIM_SIZE) {
+        ctx.fillStyle = 'rgba(108,99,255,0.35)';
+        ctx.fillRect(px, py, 1, 1);
+      }
+    }
+  }
+
+  // Center pixel
+  ctx.fillStyle = 'rgba(255,101,132,0.7)';
+  ctx.fillRect(x, y, 1, 1);
+}
+
+function updateKernelHighlight(kx, ky) {
+  const cells = document.querySelectorAll('.kernel-cell-big');
+  cells.forEach((c, i) => {
+    c.classList.remove('highlight');
+    const row = Math.floor(i / 3), col = i % 3;
+    if (row === ky && col === kx) c.classList.add('highlight');
+  });
+}
+
+function renderKernelBig(filterId) {
+  const f = FILTERS.find(x => x.id === filterId);
+  const kernel = f.type === 'sobel' ? f.kernelX : f.kernel;
+  const el = document.getElementById('kernel-display-big');
+  el.innerHTML = kernel.flat().map(v =>
+    `<div class="kernel-cell-big ${v > 0 ? 'positive' : v < 0 ? 'negative' : ''}">${v}</div>`
+  ).join('');
+}
+
+
+function toggleAnimation() {
+  if (animRunning) {
+    stopAnimation();
+  } else {
+    startAnimation();
+  }
+}
+
+function startAnimation() {
+  if (!sourceImageData) { setStatus('Load an image first!', ''); return; }
+  if (!animGray || animY >= ANIM_SIZE) {
+    if (!initAnimData()) return;
+  }
+  animRunning = true;
+  document.getElementById('anim-btn').textContent = '⏸ Pause';
+  stepAnimation();
+}
+
+function stopAnimation() {
+  animRunning = false;
+  if (animFrame) cancelAnimationFrame(animFrame);
+  document.getElementById('anim-btn').textContent = '▶ Animate';
+}
+
+function resetAnimation() {
+  stopAnimation();
+  animX = 0; animY = 0;
+  animGray = null; animOutputData = null;
+  const out = document.getElementById('anim-output-canvas');
+  out.getContext('2d').clearRect(0, 0, ANIM_SIZE, ANIM_SIZE);
+  const overlay = document.getElementById('anim-overlay');
+  overlay.getContext('2d').clearRect(0, 0, ANIM_SIZE, ANIM_SIZE);
+  document.getElementById('anim-progress').style.width = '0%';
+  document.getElementById('anim-eq').innerHTML = 'Start the animation to see the calculation here.';
+}
+
+function stepAnimation() {
+  if (!animRunning) return;
+  const speed = parseInt(document.getElementById('anim-speed').value);
+  const stepsPerFrame = Math.max(1, speed * speed);
+
+  for (let s = 0; s < stepsPerFrame; s++) {
+    if (animY >= ANIM_SIZE) { finishAnimation(); return; }
+
+    if (!animGray) { if (!initAnimData()) return; }
+
+    const val = computeAnimPixel(animX, animY);
+    const idx = (animY * ANIM_SIZE + animX) * 4;
+    animOutputData[idx] = val;
+    animOutputData[idx+1] = val;
+    animOutputData[idx+2] = val;
+    animOutputData[idx+3] = 255;
+
+    animX++;
+    if (animX >= ANIM_SIZE) { animX = 0; animY++; }
+  }
+
+  // Render output
+  const outCtx = document.getElementById('anim-output-canvas').getContext('2d');
+  const imgd = new ImageData(new Uint8ClampedArray(animOutputData), ANIM_SIZE, ANIM_SIZE);
+  outCtx.putImageData(imgd, 0, 0);
+
+  // Draw overlay at current pos
+  const cx = animX, cy = animY < ANIM_SIZE ? animY : ANIM_SIZE - 1;
+  drawAnimOverlay(cx, cy);
+
+  // Update equation for last processed pixel
+  if (animY < ANIM_SIZE || animX > 0) {
+    const eqX = animX === 0 ? ANIM_SIZE - 1 : animX - 1;
+    const eqY = animX === 0 ? animY - 1 : animY;
+    if (eqY >= 0 && eqY < ANIM_SIZE) {
+      document.getElementById('anim-eq').innerHTML = buildEquationHTML(eqX, eqY);
+    }
+  }
+
+  const progress = ((animY * ANIM_SIZE + animX) / (ANIM_SIZE * ANIM_SIZE)) * 100;
+  document.getElementById('anim-progress').style.width = progress + '%';
+
+  animFrame = requestAnimationFrame(stepAnimation);
+}
+
+function finishAnimation() {
+  stopAnimation();
+  document.getElementById('anim-progress').style.width = '100%';
+  document.getElementById('anim-btn').textContent = '↺ Replay';
+  document.getElementById('anim-overlay').getContext('2d').clearRect(0, 0, ANIM_SIZE, ANIM_SIZE);
+}
+
+// ─── Boot ──────────────────────────────────────────────────────────────────
+init();
+</script>
+</body>
+</html>
