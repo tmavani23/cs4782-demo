@@ -38,7 +38,7 @@
   #text-input { flex: 1; background: var(--surface2); border: 1px solid var(--border); color: var(--text); padding: 10px 14px; border-radius: 8px; font-size: 0.95rem; outline: none; transition: border-color 0.15s; }
   #text-input:focus { border-color: var(--accent); }
 
-  /* ── HEAD COUNT SELECTOR ─────────────────── */
+  /* HEAD COUNT SELECTOR */
   .head-count-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
   .head-count-row label { font-size: 0.85rem; color: var(--text-muted); white-space: nowrap; }
   .count-btns { display: flex; gap: 5px; }
@@ -52,7 +52,7 @@
   .real-models-note { font-size: 0.75rem; color: var(--text-muted); }
   .real-models-note span { color: var(--text); }
 
-  /* ── HEAD CARDS ───────────────────────────── */
+  /* CARDS FOR THE HEADS */
   .head-cards { display: flex; gap: 8px; flex-wrap: wrap; }
   .head-card {
     flex: 1; min-width: 140px; max-width: 220px;
@@ -69,7 +69,7 @@
   .head-tag  { font-size: 0.68rem; font-weight: 600; color: var(--accent-light); margin-bottom: 5px; }
   .head-desc { font-size: 0.73rem; color: var(--text-muted); line-height: 1.4; }
 
-  /* ── LAYER CONTROL ────────────────────────── */
+  /* LAYER CONTROL */
   .layer-row { display: flex; align-items: flex-start; gap: 18px; flex-wrap: wrap; }
   .layer-left { display: flex; flex-direction: column; gap: 8px; min-width: 200px; }
   .layer-slider-row { display: flex; align-items: center; gap: 10px; }
@@ -77,14 +77,15 @@
   input[type=range] { accent-color: var(--accent); cursor: pointer; }
   .layer-labels { display: flex; justify-content: space-between; font-size: 0.68rem; color: var(--text-muted); padding: 0 2px; }
   .layer-desc { font-size: 0.8rem; color: var(--text); line-height: 1.4; padding: 8px 10px; background: var(--surface2); border-radius: 6px; border-left: 3px solid var(--accent); }
-  /* Live distribution bars */
+  
+  /* LIVE DISTRIBUTION BARS */
   .layer-right { flex: 1; min-width: 160px; }
   .dist-label { font-size: 0.68rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 6px; }
   .dist-bars { display: flex; align-items: flex-end; gap: 3px; height: 36px; padding: 0 2px; }
   .dist-bar { flex: 1; border-radius: 3px 3px 0 0; background: var(--accent); transition: height 0.3s ease, opacity 0.3s ease; min-height: 2px; }
   .dist-caption { font-size: 0.68rem; color: var(--text-muted); margin-top: 4px; text-align: center; }
 
-  /* ── CAUSAL MASK ──────────────────────────── */
+  /* CAUSAL MASK  */
   .mask-row { display: flex; align-items: flex-start; gap: 14px; flex-wrap: wrap; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); }
   .toggle { width: 38px; height: 22px; border-radius: 11px; border: none; cursor: pointer; background: var(--border); position: relative; transition: background 0.2s; flex-shrink: 0; margin-top: 2px; }
   .toggle::after { content: ''; position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; background: #fff; border-radius: 50%; transition: left 0.2s; }
@@ -98,7 +99,7 @@
   .mask-case.off-case { background: rgba(63,185,80,0.08);  border: 1px solid rgba(63,185,80,0.3);  color: var(--green); }
   .mask-case.on-case  { background: rgba(236,72,153,0.08); border: 1px solid rgba(236,72,153,0.3); color: var(--accent2); }
 
-  /* ── TOKEN SECTION ────────────────────────── */
+  /* TOKEN SECTION */
   .token-section { position: relative; padding-top: 150px; min-height: 210px; }
   #arrow-svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: all; overflow: visible; }
   .token-row { display: flex; gap: 10px; flex-wrap: wrap; position: relative; z-index: 2; justify-content: center; }
@@ -117,7 +118,7 @@
   .tok-idx    { position: absolute; top: -9px; left: 50%; transform: translateX(-50%); font-size: 0.62rem; color: var(--text-muted); background: var(--surface); padding: 0 4px; border-radius: 3px; }
   .tok-weight { position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%); font-size: 0.68rem; color: var(--accent-light); white-space: nowrap; font-weight: 600; }
 
-  /* ── NEXT TOKEN ───────────────────────────── */
+  /* NEXT TOKEN */
   .next-strip { display: none; align-items: center; gap: 8px; margin-top: 28px; flex-wrap: wrap; justify-content: center; }
   .next-strip.visible { display: flex; }
   .next-strip-label { font-size: 0.82rem; color: var(--text-muted); }
@@ -135,7 +136,7 @@
   .next-bar-fill { height: 100%; background: var(--accent2); border-radius: 2px; }
   .next-hint { font-size: 0.72rem; color: var(--text-muted); font-style: italic; }
 
-  /* ── CALC PANEL ───────────────────────────── */
+  /* CALC PANEL */
   .calc-intro { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 14px; line-height: 1.5; }
   .calc-intro strong { color: var(--text); }
   .calc-step { display: grid; grid-template-columns: 24px 1fr; gap: 10px; align-items: start; padding: 10px 0; border-bottom: 1px solid var(--border); }
@@ -153,7 +154,7 @@
   .score-raw { color: var(--text-muted); text-align: right; font-family: monospace; }
   .score-pct { color: var(--text); font-weight: 700; text-align: right; }
 
-  /* ── HEATMAP ──────────────────────────────── */
+  /* HEATMAP */
   .heatmap-outer { overflow-x: auto; padding-bottom: 4px; }
   .hm-container { display: inline-flex; flex-direction: column; gap: 0; }
   .hm-col-row { display: flex; align-items: flex-end; gap: 3px; margin-bottom: 4px; }
@@ -165,13 +166,14 @@
   .hm-cell { flex-shrink: 0; border-radius: 5px; display: flex; align-items: center; justify-content: center; font-size: 0.68rem; font-weight: 700; cursor: pointer; border: 2px solid transparent; transition: transform 0.1s; color: rgba(255,255,255,0.9); text-shadow: 0 1px 3px rgba(0,0,0,0.8); }
   .hm-cell:hover { transform: scale(1.12); z-index: 5; outline: 2px solid white; outline-offset: 1px; }
   .hm-data-row.active-query .hm-cell { outline: 2px solid rgba(124,58,237,0.5); outline-offset: 1px; }
-  /* Masked cells: upper-right triangle when causal mask is on */
+  
+  /* MASKED CELLS: upper-right triangle when causal mask is on */
   .hm-cell.causal-masked { background: var(--surface3) !important; color: var(--border) !important; text-shadow: none; cursor: default; }
   .hm-cell.causal-masked::after { content: '✕'; font-size: 0.7rem; }
   .hm-legend { display: flex; align-items: center; gap: 8px; margin-top: 10px; font-size: 0.72rem; color: var(--text-muted); }
   .legend-grad { width: 100px; height: 10px; border-radius: 5px; background: linear-gradient(to right, var(--surface3), var(--accent)); border: 1px solid var(--border); }
 
-  /* ── TOP ATTENDED ─────────────────────────── */
+  /* TOP ATTENDED */
   .top-attn-list { display: flex; flex-direction: column; gap: 6px; }
   .top-attn-row { display: flex; align-items: center; gap: 8px; padding: 7px 10px; background: var(--surface2); border-radius: 6px; border: 1px solid var(--border); }
   .top-attn-rank { font-size: 0.68rem; color: var(--text-muted); width: 18px; }
@@ -180,12 +182,56 @@
   .top-attn-fill { height: 100%; border-radius: 4px; transition: width 0.4s ease; }
   .top-attn-pct  { font-size: 0.75rem; color: var(--text-muted); min-width: 38px; text-align: right; font-family: monospace; }
 
-  /* Tooltip */
+  /* TOOL TIP ON HOVER */
   #tooltip { position: fixed; pointer-events: none; z-index: 100; background: var(--surface3); border: 1px solid var(--accent); color: var(--text); padding: 6px 10px; border-radius: 6px; font-size: 0.78rem; white-space: nowrap; opacity: 0; transition: opacity 0.15s; transform: translate(-50%, -120%); }
   #tooltip.visible { opacity: 1; }
 
   .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
   @media (max-width: 720px) { .two-col { grid-template-columns: 1fr; } .head-cards { flex-direction: column; } }
+
+  /* QKV EXPLAINER */
+  .qkv-roles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 14px 0; }
+  @media (max-width: 600px) { .qkv-roles { grid-template-columns: 1fr; } }
+  .qkv-role { padding: 14px; border-radius: 9px; border: 2px solid; }
+  .role-q { border-color: var(--accent);  background: rgba(124,58,237,0.08); }
+  .role-k { border-color: var(--accent2); background: rgba(236,72,153,0.08); }
+  .role-v { border-color: var(--green);   background: rgba(63,185,80,0.08); }
+  .role-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .role-letter { font-size: 1.6rem; font-weight: 900; line-height: 1; }
+  .role-q .role-letter { color: var(--accent-light); }
+  .role-k .role-letter { color: var(--accent2); }
+  .role-v .role-letter { color: var(--green); }
+  .role-name  { font-size: 0.9rem; font-weight: 700; }
+  .role-quote { font-size: 0.8rem; font-style: italic; color: var(--text-muted); margin-bottom: 7px; padding-left: 2px; }
+  .role-when  { font-size: 0.75rem; color: var(--text-muted); line-height: 1.5; }
+  .qkv-formula {
+    text-align: center; font-size: 1rem; line-height: 2;
+    background: var(--surface2); border-radius: 8px; padding: 12px 16px;
+    border: 1px solid var(--border); font-family: monospace;
+  }
+  .qkv-formula .fstep { font-size: 0.72rem; color: var(--text-muted); display: block; }
+  
+  /* Q / K BADGES ON TOKENS */
+  .tok-role-badge {
+    position: absolute; top: -10px; right: -6px;
+    width: 18px; height: 18px; border-radius: 50%;
+    font-size: 0.62rem; font-weight: 800;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.5);
+  }
+  .tok-role-q { background: var(--accent);  color: #fff; }
+  .tok-role-k { background: var(--accent2); color: #fff; }
+  
+  /* MINI VECTOR IN CALCULATIONS */
+  .vec-pair { display: flex; gap: 18px; flex-wrap: wrap; margin: 10px 0; }
+  .vec-box { display: flex; flex-direction: column; gap: 5px; }
+  .vec-title { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; }
+  .vec-bars { display: flex; gap: 4px; align-items: flex-end; height: 38px; }
+  .vec-b { width: 20px; border-radius: 3px 3px 0 0; display: flex; flex-direction: column; justify-content: flex-end; position: relative; }
+  .vec-b-fill { width: 100%; border-radius: 3px 3px 0 0; }
+  .vec-b-val { font-size: 0.58rem; font-family: monospace; color: var(--text-muted); text-align: center; margin-top: 2px; white-space: nowrap; }
+  .dot-arrow { display: flex; align-items: center; color: var(--text-muted); font-size: 0.85rem; padding-top: 14px; }
+  .dot-result { background: var(--surface2); border: 1px solid var(--accent); border-radius: 6px; padding: 6px 12px; font-family: monospace; font-size: 0.82rem; color: var(--accent-light); align-self: center; margin-top: 14px; }
 </style>
 </head>
 <body>
@@ -198,7 +244,6 @@
 
 <div class="page">
 
-  <!-- ① Input -->
   <div class="card">
     <div class="card-title">Input Text</div>
     <div class="input-row">
@@ -209,18 +254,15 @@
     <p class="hint" style="margin-top:8px">Press Enter or click Tokenize &nbsp;·&nbsp; then click any word below &nbsp;·&nbsp; ← → arrow keys cycle through words</p>
   </div>
 
-  <!-- ② Attention Heads -->
   <div class="card">
     <div class="card-title">Attention Heads</div>
 
-    <!-- What are attention heads? -->
     <p style="font-size:0.88rem;line-height:1.6;margin-bottom:14px">
       A transformer can run <strong>many attention heads in parallel</strong> — each one asks a <em>different question</em> about the sentence.
       Think of it like having several people read the same sentence simultaneously, each looking for something different.
       Choose how many heads to use, then click one to view its pattern:
     </p>
 
-    <!-- Head count picker -->
     <div class="head-count-row">
       <label>Number of heads:</label>
       <div class="count-btns" id="count-btns">
@@ -234,7 +276,6 @@
       <span class="real-models-note">Real models: GPT-2 uses <span>12</span> · BERT uses <span>12–16</span> · GPT-4 likely uses <span>96+</span></span>
     </div>
 
-    <!-- Head cards (rendered by JS) -->
     <div class="head-cards" id="head-cards"></div>
 
     <p class="hint" style="margin-top:10px">
@@ -243,9 +284,7 @@
     </p>
   </div>
 
-  <!-- ③ Layer depth + Causal mask -->
   <div class="card">
-    <!-- Layer -->
     <div class="card-title">Layer Depth — how deep in the network?</div>
     <div class="layer-row">
       <div class="layer-left">
@@ -265,7 +304,6 @@
       </div>
     </div>
 
-    <!-- Causal mask -->
     <div class="mask-row">
       <button class="toggle" id="mask-toggle" onclick="onMaskToggle()"></button>
       <div class="mask-explain">
@@ -289,7 +327,63 @@
     </div>
   </div>
 
-  <!-- ④ Token visualization -->
+  <div class="card">
+    <div class="card-title">The Three Roles Every Word Plays — Q, K, and V</div>
+    <p style="font-size:0.86rem;color:var(--text-muted);line-height:1.55">
+      Before computing attention, each word is projected into <strong style="color:var(--text)">three separate vectors</strong> using learned weight matrices.
+      Think of a word wearing three hats simultaneously:
+    </p>
+    <div class="qkv-roles">
+      <div class="qkv-role role-q">
+        <div class="role-header">
+          <span class="role-letter">Q</span>
+          <span class="role-name">Query</span>
+        </div>
+        <div class="role-quote">"What am I looking for?"</div>
+        <div class="role-when">
+          Active when <em>this</em> word is asking a question.
+          The Query vector goes out and searches other words' Keys to find relevant matches.
+          <br><br><strong style="color:var(--accent-light)">In the demo below:</strong> the word you click becomes the Query <span style="background:var(--accent);color:#fff;padding:1px 5px;border-radius:10px;font-size:0.68rem;font-weight:700">Q</span>
+        </div>
+      </div>
+      <div class="qkv-role role-k">
+        <div class="role-header">
+          <span class="role-letter">K</span>
+          <span class="role-name">Key</span>
+        </div>
+        <div class="role-quote">"What do I offer to others?"</div>
+        <div class="role-when">
+          Active when <em>other</em> words query this word.
+          Every Query is compared against every Key via a dot product — the closer they are, the higher the score.
+          <br><br><strong style="color:var(--accent2)">In the demo below:</strong> all non-selected words act as Keys <span style="background:var(--accent2);color:#fff;padding:1px 5px;border-radius:10px;font-size:0.68rem;font-weight:700">K</span>
+        </div>
+      </div>
+      <div class="qkv-role role-v">
+        <div class="role-header">
+          <span class="role-letter">V</span>
+          <span class="role-name">Value</span>
+        </div>
+        <div class="role-quote">"What information do I carry?"</div>
+        <div class="role-when">
+          The actual content passed along.
+          After softmax turns scores into weights, those weights are used to blend all the Value vectors together — giving the query word its final output.
+          <br><br><strong style="color:var(--green)">Result:</strong> output = weighted sum of all Values <span style="background:rgba(63,185,80,0.2);color:var(--green);padding:1px 5px;border-radius:10px;font-size:0.68rem;font-weight:700">V</span>
+        </div>
+      </div>
+    </div>
+    <div class="qkv-formula">
+      Attention(<span style="color:var(--accent-light)">Q</span>, <span style="color:var(--accent2)">K</span>, <span style="color:var(--green)">V</span>)
+      &nbsp;=&nbsp;
+      softmax<big>(</big>
+        <span style="color:var(--accent-light)">Q</span> · <span style="color:var(--accent2)">Kᵀ</span> / √d
+      <big>)</big>
+      &nbsp;·&nbsp; <span style="color:var(--green)">V</span>
+      <span class="fstep">
+        ① dot every Q with every K &nbsp;→&nbsp; ② divide by √d to stabilize &nbsp;→&nbsp; ③ softmax → weights &nbsp;→&nbsp; ④ weighted blend of all V
+      </span>
+    </div>
+  </div>
+
   <div class="card" id="token-card" style="padding-bottom:32px">
     <div class="card-title" id="token-card-title">Click a word — it becomes the Query</div>
     <div class="token-section" id="token-section">
@@ -299,13 +393,11 @@
     <div class="next-strip" id="next-strip"></div>
   </div>
 
-  <!-- ⑤ Step-by-step calculation -->
   <div class="card" id="calc-panel">
     <div class="card-title">How the Attention Weights Are Calculated</div>
     <div id="calc-content"><p class="hint">Select a word above to see the step-by-step math.</p></div>
   </div>
 
-  <!-- ⑥ Heatmap + top attended -->
   <div class="two-col">
     <div class="card">
       <div class="card-title">Full Attention Matrix</div>
@@ -334,9 +426,8 @@
 <div id="tooltip"></div>
 
 <script>
-// ═══════════════════════════════════════════════════
-//  HEAD DEFINITIONS — 8 named personalities
-// ═══════════════════════════════════════════════════
+
+// defines the attention heads
 const ALL_HEAD_DEFS = [
   { name:'Global',      icon:'🌐', tag:'Scans the whole sentence',
     desc:'No strong preference for near or far words — useful for catching long-range relationships.',
@@ -367,9 +458,6 @@ const ALL_HEAD_DEFS = [
 const MAX_LAYERS  = 6;
 const NEXT_VOCAB  = ['floor','rug','bed','table','window','chair','quietly','slowly','then','while','purring','sleeping','resting','happily','again'];
 
-// ═══════════════════════════════════════════════════
-//  STATE
-// ═══════════════════════════════════════════════════
 const state = {
   tokens: [],
   generatedSet: new Set(),  // indices of AI-generated tokens
@@ -382,9 +470,7 @@ const state = {
   attentionMatrix: [],  // [i][j] — softmax weights for current settings
 };
 
-// ═══════════════════════════════════════════════════
-//  MATH
-// ═══════════════════════════════════════════════════
+// calculations
 function softmax(arr, temperature=1.0) {
   const scaled = arr.map(v => v/temperature);
   const max = Math.max(...scaled.filter(isFinite));
@@ -406,7 +492,6 @@ function computeAttentionMatrix() {
   const {tokens,head,layer,causalMask,rawMatrices} = state;
   const n = tokens.length;
   if (!n || !rawMatrices[head]) return [];
-  // Layer 1 = temp 2.5 (flat/uniform) → Layer 6 = temp 0.35 (sharp/focused)
   const temp = 2.5 - ((layer-1)/(MAX_LAYERS-1))*2.15;
   return rawMatrices[head].map((row,i) => {
     const logits = row.map((v,j)=> causalMask&&j>i ? -Infinity : v);
@@ -414,9 +499,7 @@ function computeAttentionMatrix() {
   });
 }
 
-// ═══════════════════════════════════════════════════
-//  TOKENIZE
-// ═══════════════════════════════════════════════════
+// tokenization
 function tokenizeAndRender(keepGenerated=false) {
   const text = document.getElementById('text-input').value.trim();
   if (!text) return;
@@ -429,16 +512,12 @@ function tokenizeAndRender(keepGenerated=false) {
   scrollToTokens();
 }
 
-// ═══════════════════════════════════════════════════
-//  SCROLL
-// ═══════════════════════════════════════════════════
+// automatic scroll
 function scrollToTokens() {
   document.getElementById('token-card').scrollIntoView({behavior:'smooth', block:'start'});
 }
 
-// ═══════════════════════════════════════════════════
-//  RENDER — HEAD CARDS
-// ═══════════════════════════════════════════════════
+// cards for attention heads
 function renderHeadCards() {
   const heads = ALL_HEAD_DEFS.slice(0, state.numHeads);
   document.getElementById('head-cards').innerHTML = heads.map((hd,h) => `
@@ -450,9 +529,7 @@ function renderHeadCards() {
     </div>`).join('');
 }
 
-// ═══════════════════════════════════════════════════
-//  RENDER — LAYER DESCRIPTION + LIVE DISTRIBUTION
-// ═══════════════════════════════════════════════════
+// live distribution rendering
 function renderLayerPanel() {
   const {layer, tokens, selectedToken, attentionMatrix} = state;
   const temp = 2.5 - ((layer-1)/(MAX_LAYERS-1))*2.15;
@@ -468,7 +545,6 @@ function renderLayerPanel() {
   ];
   document.getElementById('layer-desc').textContent = descs[layer];
 
-  // Live distribution bars for the selected query
   const attn = attentionMatrix[selectedToken] || [];
   const maxW = Math.max(...attn, 0.001);
   const barsHtml = attn.map((w,j) => {
@@ -479,7 +555,6 @@ function renderLayerPanel() {
   }).join('');
   document.getElementById('dist-bars').innerHTML = barsHtml || '<span class="hint">—</span>';
 
-  // Caption: describe the distribution shape
   if (attn.length) {
     const sorted = [...attn].sort((a,b)=>b-a);
     const topShare = ((sorted[0]||0)*100).toFixed(0);
@@ -492,9 +567,6 @@ function renderLayerPanel() {
   }
 }
 
-// ═══════════════════════════════════════════════════
-//  RENDER — TOKENS
-// ═══════════════════════════════════════════════════
 function renderTokens() {
   const {tokens, selectedToken, attentionMatrix, causalMask, generatedSet} = state;
   const attn = attentionMatrix[selectedToken] || [];
@@ -511,18 +583,17 @@ function renderTokens() {
     return `
       <div class="${cls}" id="tok-${i}" onclick="selectToken(${i})">
         <span class="tok-idx">${i}</span>
+        ${isQuery  ? `<span class="tok-role-badge tok-role-q">Q</span>` : ''}
+        ${!isQuery && !isMasked ? `<span class="tok-role-badge tok-role-k">K</span>` : ''}
         <span>${tok}</span>
-        ${isQuery   ? `<span class="tok-weight" style="color:var(--accent)">query</span>` : ''}
+        ${isQuery   ? `<span class="tok-weight" style="color:var(--accent)">Query</span>` : ''}
         ${isMasked  ? `<span class="tok-weight" style="color:#555">🚫 masked</span>` : ''}
-        ${isGenerated&&!isQuery ? `<span class="tok-weight" style="color:var(--green)">✨ generated</span>` : ''}
+        ${isGenerated&&!isQuery ? `<span class="tok-weight" style="color:var(--green)">✨</span>` : ''}
         ${!isQuery&&!isMasked&&!isGenerated ? `<span class="tok-weight">${(w*100).toFixed(1)}%</span>` : ''}
       </div>`;
   }).join('');
 }
 
-// ═══════════════════════════════════════════════════
-//  RENDER — SVG ARROWS
-// ═══════════════════════════════════════════════════
 function renderArrows() {
   const svg = document.getElementById('arrow-svg');
   const section = document.getElementById('token-section');
@@ -591,7 +662,6 @@ function renderArrows() {
       }
     });
 
-    // Self-loop
     const sw=attn[selectedToken]??0;
     if (sw>0.005){
       const loop=document.createElementNS('http://www.w3.org/2000/svg','path');
@@ -608,9 +678,6 @@ function renderArrows() {
   });
 }
 
-// ═══════════════════════════════════════════════════
-//  RENDER — STEP-BY-STEP CALC
-// ═══════════════════════════════════════════════════
 function renderCalc() {
   const {tokens,selectedToken,attentionMatrix,head,layer,causalMask,rawMatrices} = state;
   if (!tokens.length) return;
@@ -644,60 +711,120 @@ function renderCalc() {
   const topOther = rows.filter(r=>r.j!==selectedToken&&!r.masked).sort((a,b)=>b.weight-a.weight)[0];
   const topName = topOther?`"${topOther.tok}"`:'"itself"';
 
+  // The raw logit rawRow[j] IS the Q·K score for the query→key pair (by definition of how we simulate it).
+  // We show illustrative Q/K vectors for the concept, but the dot product displayed must equal rawRow[j]
+  // so it matches the score table. The vectors are decorative; the number comes from the table.
+  const mat = rawMatrices[head] || [];
+  const DIM = Math.min(5, state.tokens.length);
+  const qVec = mat[selectedToken] ? mat[selectedToken].slice(0, DIM) : [];
+  // K is derived to be parallel to Q, scaled so Q·K equals the actual raw score.
+  // This is honest: we don't know the real K, so we show a consistent illustration.
+  const actualScore = topOther ? rawRow[topOther.j] : 0;
+  const qNormSq = qVec.reduce((s, v) => s + v*v, 0) || 1;
+  const kVec = qVec.map(v => v * actualScore / qNormSq);
+  const dotProduct = actualScore; // guaranteed to match the table
+
+  function vecBarsHtml(vec, color) {
+    const maxAbs = Math.max(...vec.map(Math.abs), 0.1);
+    return vec.map(v => {
+      const h = Math.abs(v) / maxAbs * 30;
+      const pos = v >= 0;
+      return `<div class="vec-b">
+        <div class="vec-b-fill" style="height:${h}px;background:${pos ? color : '#ef4444'};border-radius:3px"></div>
+        <div class="vec-b-val">${v.toFixed(1)}</div>
+      </div>`;
+    }).join('');
+  }
+
+  const qColor = 'var(--accent-light)';
+  const kColor = 'var(--accent2)';
+  const vColor = 'var(--green)';
+
   document.getElementById('calc-content').innerHTML = `
     <p class="calc-intro">
-      <strong>"${queryTok}"</strong> is the query (Head ${head+1}, Layer ${layer}, temperature ${temp}).
-      Here is every step to compute how much attention it pays to each word:
+      <strong>"${queryTok}"</strong> is the <span style="color:var(--accent-light);font-weight:700">Q (Query)</span>
+      — Head ${head+1}, Layer ${layer}, temperature ${temp}.
+      Every other word is simultaneously a <span style="color:var(--accent2);font-weight:700">K (Key)</span>
+      and a <span style="color:var(--green);font-weight:700">V (Value)</span>.
     </p>
     <div>
+
       <div class="calc-step">
         <div class="step-num">1</div>
         <div>
-          <div class="step-title">Compute a compatibility score for every word (simulates Q · Kᵀ)</div>
-          <div class="step-desc">The query vector for "${queryTok}" is compared with each word's key vector via a dot product. Higher score = better match.</div>
-          <div class="score-table">
+          <div class="step-title"><span style="color:var(--accent-light)">Q</span> · <span style="color:var(--accent2)">Kᵀ</span> — dot the Query with every Key to get a raw score</div>
+          <div class="step-desc">
+            The Query vector for <span style="color:var(--accent-light)">"${queryTok}"</span> is compared with the Key vector of every other word.
+            A <strong>dot product</strong> measures how aligned two vectors are — higher alignment = higher score = more attention.
+          </div>
+          ${qVec.length && topOther ? `
+          <div class="vec-pair">
+            <div class="vec-box">
+              <div class="vec-title" style="color:${qColor}">Q — "${queryTok}"</div>
+              <div class="vec-bars">${vecBarsHtml(qVec, 'var(--accent-light)')}</div>
+            </div>
+            <div class="dot-arrow">·</div>
+            <div class="vec-box">
+              <div class="vec-title" style="color:${kColor}">K — "${topOther.tok}"</div>
+              <div class="vec-bars">${vecBarsHtml(kVec, 'var(--accent2)')}</div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:5px;align-self:center;margin-top:14px">
+              <div class="dot-result">Q · K = <strong>${dotProduct.toFixed(2)}</strong></div>
+              <div style="font-size:0.68rem;color:var(--text-muted);text-align:center;max-width:110px">
+                ↓ same value as the ⭐ row below
+              </div>
+            </div>
+          </div>
+          <p style="font-size:0.71rem;color:var(--text-muted);margin-top:6px;font-style:italic">
+            Vectors shown are illustrative — real Q and K are high-dimensional learned embeddings. The score (${dotProduct.toFixed(2)}) is what matters, and it matches the table.
+          </p>` : ''}
+          <div class="score-table" style="margin-top:10px">
             <div class="score-row" style="background:transparent;font-size:0.68rem;color:var(--text-muted);font-weight:700">
-              <span>Word</span><span>Score (relative)</span><span style="text-align:right">Raw</span><span style="text-align:right">Weight</span>
+              <span>Key word</span><span>Q·K score (bar)</span><span style="text-align:right">Q·K</span><span style="text-align:right">→ weight %</span>
             </div>
             ${scoreHtml}
           </div>
         </div>
       </div>
+
       <div class="calc-step">
         <div class="step-num">2</div>
         <div>
-          <div class="step-title">Softmax converts scores → probabilities that sum to 100%</div>
+          <div class="step-title">softmax( <span style="color:var(--accent-light)">Q</span>·<span style="color:var(--accent2)">K</span> / √d ) — turn scores into attention weights</div>
           <div class="step-desc">
-            <code style="background:var(--surface2);padding:3px 7px;border-radius:4px;font-size:0.8rem;color:var(--accent-light)">weight[j] = e^(score[j] / T) / Σ e^(score[k] / T)</code>
+            Dividing by √d (dimension of the vectors) keeps gradients stable during training.
+            Then <strong>softmax</strong> compresses all scores into a probability distribution that sums to 100%.
             <br><br>
-            Temperature T = <strong style="color:var(--accent-light)">${temp}</strong> &nbsp;→&nbsp;
-            ${parseFloat(temp)<1.0
-              ? '⚡ Low temp: one word dominates (spiky distribution)'
-              : parseFloat(temp)>1.8
-              ? '🌊 High temp: attention spreads evenly (flat distribution)'
-              : '⚖️ Medium temp: moderate focus'}
-            <br>This is controlled by the <strong>Layer</strong> slider above.
+            <code style="background:var(--surface2);padding:3px 8px;border-radius:4px;font-size:0.78rem;color:var(--accent-light)">
+              weight[j] = exp(Q·K[j] / T) / Σ exp(Q·K[k] / T)
+            </code>
+            <br><br>
+            Temperature T = <strong style="color:var(--accent-light)">${temp}</strong> (from Layer slider) &nbsp;→&nbsp;
+            ${parseFloat(temp)<1.0 ? '⚡ spiky: one word dominates' : parseFloat(temp)>1.8 ? '🌊 flat: attention spreads evenly' : '⚖️ moderate focus'}
           </div>
         </div>
       </div>
+
       <div class="calc-step">
         <div class="step-num">3</div>
         <div>
-          <div class="step-title">Weighted sum of Value vectors → output</div>
+          <div class="step-title">weights · <span style="color:${vColor}">V</span> — blend the Value vectors into the output</div>
           <div class="step-desc">
-            The output for "${queryTok}" is a blend of all words' Value vectors, weighted by the attention scores:<br><br>
-            <strong style="color:var(--accent-light)">${rows.slice(0,4).map(r=>`${(r.weight*100).toFixed(0)}%·V("${r.tok}")`).join(' + ')}${rows.length>4?' + …':''}</strong>
+            Each word also has a <span style="color:${vColor};font-weight:600">Value (V)</span> vector — the actual content it contributes.
+            The final output for <span style="color:var(--accent-light)">"${queryTok}"</span> is a weighted sum of every word's V:
             <br><br>
-            "${queryTok}" ends up most influenced by ${topName}, because that word got the highest attention weight.
+            <strong style="color:${vColor}">${rows.slice(0,4).map(r=>`${(r.weight*100).toFixed(0)}% · V("${r.tok}")`).join(' + ')}${rows.length>4?' + …':''}</strong>
+            <br><br>
+            "${queryTok}" ends up most shaped by ${topName} (highest weight), but every word's V contributes a little.
+            This blended vector is the output that flows to the next layer.
           </div>
         </div>
       </div>
+
     </div>`;
 }
 
-// ═══════════════════════════════════════════════════
-//  RENDER — HEATMAP
-// ═══════════════════════════════════════════════════
+// heatmap
 function renderHeatmap() {
   const {tokens, attentionMatrix, selectedToken, causalMask} = state;
   const n = tokens.length;
@@ -706,13 +833,11 @@ function renderHeatmap() {
   const CELL = Math.min(54, Math.max(34, Math.floor(460/n)));
   const LBL  = 68;
 
-  // Update matrix note for causal mask
   document.getElementById('mask-matrix-note').innerHTML = causalMask
     ? ' &nbsp;<strong style="color:var(--accent2)">Causal mask ON: ✕ cells are blocked — a word cannot see words that come after it.</strong>'
     : '';
 
   let html = `<div class="hm-container">`;
-  // Column header row
   html += `<div class="hm-col-row"><div class="hm-spacer" style="width:${LBL}px"></div>`;
   tokens.forEach(tok => {
     const lbl = tok.length>6 ? tok.slice(0,5)+'…' : tok;
@@ -720,7 +845,6 @@ function renderHeatmap() {
   });
   html += `</div>`;
 
-  // Data rows
   attentionMatrix.forEach((row, i) => {
     const isActive = i===selectedToken;
     html += `<div class="hm-data-row${isActive?' active-query':''}">`;
@@ -744,9 +868,7 @@ function renderHeatmap() {
   document.getElementById('heatmap-outer').innerHTML = html;
 }
 
-// ═══════════════════════════════════════════════════
-//  RENDER — TOP ATTENDED
-// ═══════════════════════════════════════════════════
+// top attended
 function renderTopAttended() {
   const {tokens,selectedToken,attentionMatrix,causalMask} = state;
   const attn = attentionMatrix[selectedToken]||[];
@@ -767,9 +889,7 @@ function renderTopAttended() {
   }).join('');
 }
 
-// ═══════════════════════════════════════════════════
-//  NEXT TOKEN — generate and show clickable picks
-// ═══════════════════════════════════════════════════
+// generate next token
 function generateNextToken() {
   const n = state.tokens.length;
   if (!n) return;
@@ -800,28 +920,22 @@ function generateNextToken() {
 }
 
 function pickNextToken(word) {
-  // Append word to the sentence
   const input = document.getElementById('text-input');
   input.value = (input.value.trim() + ' ' + word).trim();
 
-  const newIdx = state.tokens.length; // will be the index of the new word
+  const newIdx = state.tokens.length; 
   state.tokens.push(word);
   state.generatedSet.add(newIdx);
 
-  // Regenerate matrices for new token count
   state.rawMatrices = generateRawMatrices(state.tokens.length, state.numHeads);
   state.selectedToken = newIdx;
 
   update();
   scrollToTokens();
 
-  // Auto-predict the next word after a brief delay
   setTimeout(generateNextToken, 300);
 }
 
-// ═══════════════════════════════════════════════════
-//  TOOLTIP
-// ═══════════════════════════════════════════════════
 function showTip(e, text){
   const t=document.getElementById('tooltip');
   t.textContent=text; t.classList.add('visible');
@@ -836,20 +950,15 @@ function hideTip(){
   document.removeEventListener('mousemove',_moveTip);
 }
 
-// ═══════════════════════════════════════════════════
-//  EVENT HANDLERS
-// ═══════════════════════════════════════════════════
 function selectToken(idx){ state.selectedToken=idx; update(); }
 function selectHead(h){ state.head=h; update(); }
 
 function setHeadCount(n){
   state.numHeads=n;
   state.head=Math.min(state.head, n-1);
-  // Update button active state
   document.querySelectorAll('.count-btn').forEach(b=>{
     b.classList.toggle('active', parseInt(b.textContent)===n);
   });
-  // Regenerate matrices for current token count
   if (state.tokens.length)
     state.rawMatrices=generateRawMatrices(state.tokens.length, n);
   update();
@@ -882,9 +991,7 @@ document.addEventListener('keydown', e=>{
   if (e.key==='ArrowDown') { const s=document.getElementById('layer-slider'); s.value=Math.max(1,+s.value-1); onLayerChange(); }
 });
 
-// ═══════════════════════════════════════════════════
-//  MASTER UPDATE
-// ═══════════════════════════════════════════════════
+
 function update(){
   state.attentionMatrix = computeAttentionMatrix();
   document.getElementById('next-strip').className='next-strip';
@@ -897,7 +1004,6 @@ function update(){
   renderTopAttended();
 }
 
-// Delegated events on heatmap (avoids complex inline attribute escaping)
 document.getElementById('heatmap-outer').addEventListener('click', e=>{
   const cell = e.target.closest('.hm-cell:not(.causal-masked)');
   if (cell) selectToken(parseInt(cell.dataset.row));
